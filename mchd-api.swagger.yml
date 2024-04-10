@@ -1,0 +1,294 @@
+swagger: '2.0'
+info:
+  description: API Реестра сведений о доверенностях и заявлениях об отмене доверенности
+  version: '1.0'
+  title: API Реестра сведений о доверенностях и заявлениях об отмене доверенности
+  termsOfService: www.gosuslugi.ru
+  contact: { }
+host: esia.gosuslugi.ru
+basePath: /poa-registry
+schemes:
+  - https
+tags:
+  - name: Реестр сведений о доверенностях и заявлениях об отмене доверенности
+    description: Poa Registry Controller
+paths:
+  '/api/public/{version}/poa/add':
+    post:
+      tags:
+        - Реестр сведений о доверенностях и заявлениях об отмене доверенности
+      summary: Добавление сведений о доверенности
+      operationId: addPowerOfAttorneyDataUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - application/json;charset=UTF-8
+      parameters:
+        - name: version
+          in: path
+          description: Версия
+          required: true
+          type: string
+        - name: nsiId
+          in: query
+          description: Мнемоника ИС хранения
+          required: true
+          type: string
+        - in: body
+          name: powerOfAttorney
+          description: powerOfAttorney
+          required: true
+          schema:
+            $ref: '#/definitions/PowerOfAttorneyV1'
+      responses:
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+  '/api/public/{version}/poa/revoke':
+    post:
+      tags:
+        - Реестр сведений о доверенностях и заявлениях об отмене доверенности
+      summary: Добавление сведений об отмене доверенности
+      operationId: addPowerOfAttorneyRevocationDataUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - application/json;charset=UTF-8
+      parameters:
+        - name: version
+          in: path
+          description: Версия
+          required: true
+          type: string
+        - name: nsiId
+          in: query
+          description: Мнемоника ИС хранения
+          required: true
+          type: string
+        - in: body
+          name: powerOfAttorneyRevocation
+          description: powerOfAttorneyRevocation
+          required: true
+          schema:
+            $ref: '#/definitions/PowerOfAttorneyRevocationV1'
+      responses:
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request
+definitions:
+  ForeignOrganizationV1:
+    type: object
+    properties:
+      chief:
+        $ref: '#/definitions/PersonV1'
+      inn:
+        type: string
+      kpp:
+        type: string
+      name:
+        type: string
+      nza:
+        type: string
+      stateFacts:
+        type: array
+        items:
+          $ref: '#/definitions/StateFact'
+    title: ForeignOrganizationV1
+  IndividualEntrepreneurV1:
+    type: object
+    properties:
+      chief:
+        $ref: '#/definitions/PersonV1'
+      name:
+        type: string
+      ogrnip:
+        type: string
+      stateFacts:
+        type: array
+        items:
+          $ref: '#/definitions/StateFact'
+          title: IndividualEntrepreneurV1
+  OrganizationV1:
+    type: object
+    properties:
+      chief:
+        $ref: '#/definitions/PersonV1'
+      inn:
+        type: string
+      kpp:
+        type: string
+      name:
+        type: string
+      ogrn:
+        type: string
+      stateFacts:
+        type: array
+        items:
+          $ref: '#/definitions/StateFact'
+    title: OrganizationV1
+  PartiesV1:
+    type: object
+    title: PartiesV1
+    properties:
+      elements:
+        type: array
+        items:
+          $ref: '#/definitions/PartyV1'
+      pageIndex:
+        type: integer
+        format: int32
+      pageSize:
+        type: integer
+        format: int32
+      size:
+        type: integer
+        format: int64
+      stateFacts:
+        type: array
+        items:
+          $ref: '#/definitions/StateFact'
+      totalSize:
+        type: integer
+        format: int64
+  PartyV1:
+    type: object
+    title: PartyV1
+    properties:
+      branch:
+        $ref: '#/definitions/OrganizationV1'
+      foreignBranch:
+        $ref: '#/definitions/ForeignOrganizationV1'
+      foreignOrganization:
+        $ref: '#/definitions/ForeignOrganizationV1'
+      individualEntrepreneur:
+        $ref: '#/definitions/IndividualEntrepreneurV1'
+      organization:
+        $ref: '#/definitions/OrganizationV1'
+      person:
+        $ref: '#/definitions/PersonV1'
+      stateFacts:
+        type: array
+        items:
+          $ref: '#/definitions/StateFact'
+      type:
+        type: string
+  PersonV1:
+    type: object
+    properties:
+      firstName:
+        type: string
+      inn:
+        type: string
+      lastName:
+        type: string
+      middleName:
+        type: string
+      snils:
+        type: string
+      stateFacts:
+        type: array
+        items:
+          $ref: '#/definitions/StateFact'
+    title: PersonV1
+  PowerOfAttorneyRevocationV1:
+    type: object
+    properties:
+      agents:
+        $ref: '#/definitions/PartiesV1'
+      number:
+        type: string
+      poaGuid:
+        type: string
+      poaIssuedOn:
+        type: string
+      poaNotaryNumber:
+        type: string
+      poaNumber:
+        type: string
+      principals:
+        $ref: '#/definitions/PartiesV1'
+      reason:
+        type: string
+      revokedOn:
+        type: string
+      signatory:
+        $ref: '#/definitions/PartyV1'
+      stateFacts:
+        type: array
+        items:
+          $ref: '#/definitions/StateFact'
+      systems:
+        $ref: '#/definitions/StorageSystemsV1'
+    title: PowerOfAttorneyRevocationV1
+  PowerOfAttorneyV1:
+    type: object
+    properties:
+      agents:
+        $ref: '#/definitions/PartiesV1'
+      expiredOn:
+        type: string
+      guid:
+        type: string
+      issuedOn:
+        type: string
+      notaryNumber:
+        type: string
+      number:
+        type: string
+      parentGuid:
+        type: string
+      principals:
+        $ref: '#/definitions/PartiesV1'
+      stateFacts:
+        type: array
+        items:
+          $ref: '#/definitions/StateFact'
+      status:
+        type: string
+      systems:
+        $ref: '#/definitions/StorageSystemsV1'
+    title: PowerOfAttorneyV1
+  StateFact:
+    type: object
+    properties:
+      name:
+        type: string
+    title: StateFact
+  StorageSystemV1:
+    type: object
+    properties:
+      stateFacts:
+        type: array
+        items:
+          $ref: '#/definitions/StateFact'
+    title: StorageSystemV1
+  StorageSystemsV1:
+    type: object
+    properties:
+      elements:
+        type: array
+        items:
+          $ref: '#/definitions/StorageSystemV1'
+      pageIndex:
+        type: integer
+        format: int32
+      pageSize:
+        type: integer
+        format: int32
+      size:
+        type: integer
+        format: int64
+      stateFacts:
+        type: array
+        items:
+          $ref: '#/definitions/StateFact'
+      totalSize:
+        type: integer
+        format: int64
+    title: StorageSystemsV1
